@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-08",
+  "stage": "0 CPU engineering validation",
+  "environment": {
+    "python": "3.13.5",
+    "os": "Linux",
+    "sqlite": "3.46.1",
+    "torch": "2.10.0+cpu"
+  },
+  "test_groups": [
+    {
+      "suite": "core",
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 11.835
+    },
+    {
+      "suite": "pipeline",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 19.886
+    },
+    {
+      "suite": "training",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 7.285
+    }
+  ],
+  "total_passed": 66,
+  "fixture_demo": {
+    "database": "generated local SQLite shop",
+    "trajectory": "unknown column -> execution error -> corrected final query",
+    "independent_result": [
+      [
+        40.0
+      ]
+    ],
+    "run_kind": "engineering_fixture",
+    "strict_success_rate": null
+  },
+  "qwen_inference_run": false,
+  "gpu_training_run": false,
+  "public_benchmark_run": false,
+  "paid_resource_spend": 0,
+  "not_validated": [
+    "User Windows environment",
+    "Complete BIRD data and licensing",
+    "GPU dependency compatibility and lockfile",
+    "Qwen tokenizer/model integration",
+    "Adapter saving and reloading on GPU",
+    "Real-model quality, VRAM, throughput and cost"
+  ],
+  "note": "Test doubles verify interfaces; fixture success is not model accuracy. Full-suite invocation hit a tool execution time limit; all three suites were then run to completion separately."
+}

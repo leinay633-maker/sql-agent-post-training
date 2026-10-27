@@ -1,0 +1,29 @@
+{
+  "protocol": "efa-v4-rloo-two-turn-v1",
+  "phase": "pilot",
+  "train_tasks": 64,
+  "validation_tasks": 0,
+  "seeds": [
+    42
+  ],
+  "selection_seed": 42,
+  "updates": 8,
+  "prompt_batch": 8,
+  "group_size": 4,
+  "generation_batch": 16,
+  "slots": 64,
+  "max_tokens": 384,
+  "max_context": 8192,
+  "learning_rate": 1e-05,
+  "save_steps": 4,
+  "train_seconds": 3600,
+  "train_calls": 1024,
+  "eval_seconds": 7200,
+  "eval_calls": 1200,
+  "limits": {
+    "seconds": 10.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  }
+}

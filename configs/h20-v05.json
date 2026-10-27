@@ -1,0 +1,52 @@
+{
+  "protocol": "efa-v5-rft-natural-v1",
+  "phase": "study",
+  "salt": "20261010",
+  "dev_databases": 6,
+  "pool_limit": 0,
+  "dev_limit": 0,
+  "validation_limit": 0,
+  "samples_per_task": 6,
+  "temperature": 1.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_steps": 4,
+  "max_tokens": 512,
+  "max_context": 8192,
+  "sample_batch": 32,
+  "sample_slots": 128,
+  "sample_seconds": 2700,
+  "sql_workers": 16,
+  "train_examples": 4096,
+  "learning_rate": 0.0002,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "micro_batch": 4,
+  "accumulation": 4,
+  "warmup_ratio": 0.03,
+  "max_length": 8192,
+  "save_steps": 32,
+  "train_seconds": 7200,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "clean_seeds": [
+    42
+  ],
+  "eval_batch": 16,
+  "eval_slots": 64,
+  "quantization": "none",
+  "pairs_per_task": 1,
+  "pair_batch": 16,
+  "pair_learning_rate": 2e-05,
+  "pair_beta": 0.1,
+  "pair_sft_weight": 1.0,
+  "limits": {
+    "seconds": 10.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  }
+}

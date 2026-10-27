@@ -1,0 +1,22 @@
+{
+  "checked_date": "2026-10-08",
+  "model": {
+    "id": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "metadata_source": "https://huggingface.co/api/models/Qwen/Qwen3-4B-Instruct-2507",
+    "weights_downloaded": false
+  },
+  "data": {
+    "source": "https://github.com/bird-bench/mini_dev",
+    "dataset_card": "https://huggingface.co/datasets/birdsql/bird_mini_dev",
+    "revision": null,
+    "downloaded": false,
+    "note": "Resolve exact release, SELECT-only file hash and database hashes before data import."
+  },
+  "implementation_references": [
+    "https://docs.python.org/3/library/sqlite3.html",
+    "https://huggingface.co/docs/peft/en/developer_guides/quantization",
+    "https://huggingface.co/docs/transformers/en/quantization/bitsandbytes"
+  ],
+  "environment_lock_validated": false
+}

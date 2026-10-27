@@ -1,0 +1,81 @@
+{
+  "protocol": "efa-v7-teacher-distill-v1",
+  "phase": "smoke",
+  "salt": "20261012",
+  "samples_teacher": 2,
+  "samples_scale": 2,
+  "temperature": 1.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "sample_shards": 4,
+  "teacher_minutes": 20,
+  "scale_minutes": 15,
+  "max_steps": 4,
+  "max_tokens": 512,
+  "max_context": 8192,
+  "sql_workers": 16,
+  "slots": {
+    "student": 256,
+    "scale": 192,
+    "teacher": 96
+  },
+  "max_num_seqs": {
+    "student": 256,
+    "scale": 128,
+    "teacher": 64
+  },
+  "gpu_memory": {
+    "student": 0.4,
+    "scale": 0.88,
+    "teacher": 0.92
+  },
+  "eval_shards": {
+    "student": 1,
+    "scale": 1,
+    "teacher": 1
+  },
+  "vote_n": 2,
+  "vote_temperature": 0.8,
+  "vote_top_p": 0.95,
+  "vote_shards": 1,
+  "train_examples": 3435,
+  "tr_max_examples": 8192,
+  "pairs_limit": 8,
+  "learning_rate": 0.0002,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "warmup_ratio": 0.03,
+  "max_length": 8192,
+  "save_steps": 32,
+  "micro_batch": {
+    "student": 4,
+    "scale": 2
+  },
+  "accumulation": {
+    "student": 4,
+    "scale": 8
+  },
+  "train_seconds": {
+    "student": 7200,
+    "scale": 14400
+  },
+  "seeds": [
+    42
+  ],
+  "raw_seeds": [
+    42
+  ],
+  "scale_seeds": [
+    42
+  ],
+  "pair_batch": 16,
+  "pair_learning_rate": 2e-05,
+  "pair_beta": 0.1,
+  "pair_sft_weight": 1.0,
+  "limits": {
+    "seconds": 30.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  }
+}

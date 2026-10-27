@@ -1,0 +1,23 @@
+services:
+  agent:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    gpus: all
+    ports:
+      - "127.0.0.1:8787:8787"
+    environment:
+      EFA_SERVER_KEY: ${EFA_SERVER_KEY:?Set a server key with at least 24 characters}
+      CUDA_VISIBLE_DEVICES: "0"
+    volumes:
+      - ../local.json:/workspace/local.json:ro
+      - ../data:/workspace/data:ro
+      - ../outputs:/workspace/outputs
+      - model-cache:/cache
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    shm_size: 1gb
+    restart: "no"
+volumes:
+  model-cache:

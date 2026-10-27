@@ -1,0 +1,93 @@
+{
+  "version": "0.3.0",
+  "date": "2026-10-09",
+  "base_main": "802e11c1590fc387391bccecf61f809bae7cc810",
+  "branch": "pro/exec-feedback-v03",
+  "evidence_type": "Executed Linux CPU implementation tests; not model quality",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "sqlite": "3.46.1",
+    "torch": "2.10.0+cpu"
+  },
+  "code_sha256": "7fbcd338f3d94f73f2210a0e12a2f8f817eaa26925caa1e4069a147ea823c7f8",
+  "counts": {
+    "tests": 126,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "passed": 125,
+  "suites": [
+    {
+      "file": "batching.xml",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 30.364,
+      "sha256": "0a825226de1ab8dfa89be4ffc7b8ee8000dc31cf4f7002c19f838288f08c503a"
+    },
+    {
+      "file": "core-ml.xml",
+      "tests": 52,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "seconds": 19.812,
+      "sha256": "c969ba85d2aa9cb64fd5fd15930eb1f8a11c1db9f2fd39cb5728ca364407e98a"
+    },
+    {
+      "file": "pipeline-ops-report.xml",
+      "tests": 35,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 20.5,
+      "sha256": "986e0c970d4f125460782ff00b7658ea97839f65a41a471b20b93eec7c2c63d5"
+    },
+    {
+      "file": "product-service.xml",
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 28.809,
+      "sha256": "e798b83eb4391de9c59a560c2e00b219b9cf0a1ad80c59064aaea1b37053c687"
+    },
+    {
+      "file": "research.xml",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 23.269,
+      "sha256": "d80bc9bdff3bcea01be3b2635576c05854b5e8d6872cea91a279b4cd88d33397"
+    }
+  ],
+  "known_skip": "HF/PEFT integration packages unavailable here; installation attempt failed DNS. Windows/H20 must run scripts/verify.py --require-ml. Linux-only lease test is separately skipped on Windows.",
+  "checks": [
+    "Python compileall",
+    "git diff --check",
+    "bash -n bootstrap_h20.sh/setup.sh/run.sh",
+    "CPU tensor batch padding/input allowlist",
+    "Actual read-only SQLite semantic corruption and replay",
+    "Credential-free source bundle, result archive checksums and partial-checkpoint exclusion",
+    "Deterministic budget and stage-pause tests"
+  ],
+  "not_executed": [
+    "Actual Windows/PowerShell runtime",
+    "H20 bootstrap and real pretrained Qwen3-4B GPU pilot",
+    "BIRD download and real research run",
+    "CUDA/BF16 LoRA training",
+    "Docker build"
+  ],
+  "gpu_resources_used": false,
+  "model_quality_claimed": false,
+  "aggregation": "Complete pytest XML files from five bounded invocations; only completed suites counted.",
+  "wheel": {
+    "filename": "exec_feedback_agent-0.3.0-py3-none-any.whl",
+    "sha256": "29275f906047bef79bb4a37509c4a2a1b197f82e53d721f8c1a4ddb9d500f4a3",
+    "entry_points_checked": true
+  }
+}

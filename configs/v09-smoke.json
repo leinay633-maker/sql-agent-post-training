@@ -1,0 +1,41 @@
+{
+  "protocol": "efa-v9-online-rl-v1",
+  "phase": "smoke",
+  "salt": "20261014",
+  "max_steps": 4,
+  "max_tokens": 512,
+  "max_context": 8192,
+  "sql_workers": 16,
+  "limits": {
+    "seconds": 30.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  },
+  "eval_slots": 256,
+  "eval_max_num_seqs": 256,
+  "eval_gpu_memory": 0.4,
+  "seeds": [
+    42
+  ],
+  "hi_seeds": [
+    42
+  ],
+  "tasks_per_step": 4,
+  "group_size": 4,
+  "planned_steps": 2,
+  "save_steps": 1,
+  "curve_every": 1,
+  "temperature": 1.0,
+  "learning_rate": 2e-05,
+  "hi_learning_rate": 5e-05,
+  "warmup_steps": 5,
+  "max_grad_norm": 1.0,
+  "loss_tokens": 512,
+  "tis_cap": 2.0,
+  "micro_tokens": 16384,
+  "rl_gpu_memory": 0.4,
+  "rl_slots": 16,
+  "rl_max_num_seqs": 128,
+  "lora_r": 16
+}

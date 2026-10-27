@@ -1,0 +1,53 @@
+{
+  "protocol": "efa-v12-opd-v1",
+  "phase": "smoke",
+  "salt": "20261014",
+  "max_steps": 4,
+  "max_tokens": 512,
+  "max_context": 8192,
+  "sql_workers": 16,
+  "limits": {
+    "seconds": 30.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  },
+  "eval_slots": 256,
+  "eval_max_num_seqs": 256,
+  "eval_gpu_memory": 0.4,
+  "seeds": [
+    42
+  ],
+  "explore_seeds": [
+    42
+  ],
+  "tasks_per_step": 4,
+  "group_size": 4,
+  "planned_steps": 3,
+  "save_steps": 1,
+  "curve_every": 1,
+  "temperature": 1.0,
+  "learning_rate": 0.0001,
+  "warmup_steps": 5,
+  "max_grad_norm": 1.0,
+  "loss_tokens": 512,
+  "tis_cap": 2.0,
+  "micro_tokens": 16384,
+  "rl_gpu_memory": 0.4,
+  "rl_slots": 16,
+  "rl_max_num_seqs": 128,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "lora_check_step": 1,
+  "teacher_gpus": 4,
+  "teacher_eval_gpu_memory": 0.85,
+  "teacher_eval_slots": 256,
+  "teacher_eval_max_num_seqs": 256,
+  "teacher_score_gpu_memory": 0.8,
+  "teacher_score_max_num_seqs": 128,
+  "teacher_score_batched_tokens": 4096,
+  "teacher_score_context": 8208,
+  "teacher_gate_samples": 32,
+  "teacher_gate_max_gap": 0.15,
+  "teacher_wait_seconds": 1800
+}

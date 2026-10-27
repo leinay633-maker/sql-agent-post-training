@@ -1,0 +1,46 @@
+{
+  "protocol": "efa-v11-boundary-rl-v1",
+  "phase": "study",
+  "salt": "20261014",
+  "max_steps": 4,
+  "max_tokens": 512,
+  "max_context": 8192,
+  "sql_workers": 16,
+  "limits": {
+    "seconds": 30.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  },
+  "eval_slots": 256,
+  "eval_max_num_seqs": 256,
+  "eval_gpu_memory": 0.4,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "tasks_per_step": 16,
+  "group_size": 8,
+  "planned_steps": 200,
+  "save_steps": 10,
+  "curve_every": 20,
+  "temperature": 1.0,
+  "learning_rate": 2e-05,
+  "warmup_steps": 5,
+  "max_grad_norm": 1.0,
+  "loss_tokens": 512,
+  "tis_cap": 2.0,
+  "micro_tokens": 16384,
+  "rl_gpu_memory": 0.4,
+  "rl_slots": 128,
+  "rl_max_num_seqs": 128,
+  "lora_r": 16,
+  "explore_steps": 400,
+  "prepass_samples": 8,
+  "prepass_chunk": 256,
+  "boundary_gate": [
+    0.05,
+    0.6
+  ]
+}

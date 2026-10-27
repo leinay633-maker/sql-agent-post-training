@@ -1,0 +1,72 @@
+{
+  "version": 2,
+  "name": "qwen4b-sql-feedback",
+  "data": {
+    "raw_root": "data/raw",
+    "train_json": "",
+    "holdout_json": "",
+    "terms_accepted": false,
+    "validation_fraction": 0.2,
+    "seed": 42
+  },
+  "model": {
+    "backend": "transformers",
+    "id": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "local_path": "",
+    "device": "cuda",
+    "quantization": "nf4",
+    "allow_download": false,
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "allow_remote": false,
+    "max_context_tokens": 8192,
+    "max_tokens": 512,
+    "temperature": 0.0,
+    "seed": 42
+  },
+  "experiment": {
+    "output_root": "outputs/studies",
+    "train_limit": 256,
+    "validation_limit": 64,
+    "test_limit": 0,
+    "max_steps": 4,
+    "seeds": [
+      42
+    ],
+    "collection": "mixed",
+    "min_pairs": 32,
+    "final_test": false
+  },
+  "training": {
+    "max_length": 8192,
+    "max_steps": 100,
+    "gradient_accumulation_steps": 8,
+    "batch_size": 1,
+    "learning_rate": 0.0002,
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "save_steps": 10,
+    "max_seconds": 7200,
+    "warmup_ratio": 0.05
+  },
+  "limits": {
+    "seconds": 10.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 50000000
+  },
+  "resources": {
+    "max_model_calls": 2000,
+    "max_active_seconds": 21600,
+    "workers": 2,
+    "allow_fixture": false
+  },
+  "service": {
+    "host": "127.0.0.1",
+    "port": 8787,
+    "adapter": "",
+    "database_root": "data/raw",
+    "results_root": "outputs/service",
+    "max_steps": 4
+  }
+}

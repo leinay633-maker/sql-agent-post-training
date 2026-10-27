@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-08",
+  "version": "0.2.0",
+  "evidence_type": "executed implementation tests, not model quality",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "sqlite": "3.46.1",
+    "torch": "2.10.0+cpu"
+  },
+  "code_sha256": "0c72bdd00bfc1d4cf63c68e76e6099a5731ceadeaa7e4b01addb63f9e11df4c4",
+  "totals": {
+    "passed": 108,
+    "skipped": 1,
+    "failed": 0,
+    "errors": 0
+  },
+  "suites": {
+    "tests.test_core": {
+      "passed": 38,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_hf_integration": {
+      "passed": 0,
+      "skipped": 1,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_optimization": {
+      "passed": 7,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_orchestration": {
+      "passed": 3,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_pipeline": {
+      "passed": 22,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_training": {
+      "passed": 6,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_product": {
+      "passed": 22,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_service": {
+      "passed": 6,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    },
+    "tests.test_reporting": {
+      "passed": 4,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0
+    }
+  },
+  "skips": [
+    {
+      "test": "tests.test_hf_integration.test_qwen_peft_train_save_reload_and_inference",
+      "reason": "Install the ml extra to validate actual Transformers/PEFT integration"
+    }
+  ],
+  "junit_evidence_sha256": {
+    "test_core.xml": "c056494c265ff99e6c2e71ac713c598e610e7912d5890072919129002905ce96",
+    "test_hf_integration.xml": "e537df75881404f4d6b4744589b19be7e59c8e64701b52dd48ebf884e4285481",
+    "test_optimization.xml": "cfb9cc3f3a6fe8d56738e568dc652aac0a835afcdda225d3f2b5aa326d61e6bd",
+    "test_orchestration.xml": "a15d3bbabcba287434d3afc295d3ddb9e15f5e490d7c0898dd94583c44c0c26c",
+    "efa-final-pipeline.xml": "140baccb537493a1c36ce1f02a1d573ecbff17796bf3ae1b02f76551e3c94f60",
+    "efa-final-product.xml": "877a154d6940c14acdff29348415415ba93e250ea10c706643200cc776e11f40"
+  },
+  "verified": [
+    "Read-only SQLite and independent SQL grading",
+    "Database-isolated data preparation and actual gold execution",
+    "Real PyTorch low-rank parameter optimization and exact interrupted resume",
+    "Checkpoint hashes and durable journals",
+    "HTTP analysis, auth, invalid inputs and concurrent-request rejection",
+    "Paired SFT provenance and identical targets",
+    "Stage interruption, resume and artifact validation",
+    "Statistical report generation and fixture rejection",
+    "Python wheel build includes browser UI"
+  ],
+  "not_executed": [
+    "Transformers/PEFT integration (dependencies unavailable)",
+    "Qwen3-4B inference and actual BIRD benchmark",
+    "CUDA/NF4 training, target-machine VRAM and throughput",
+    "Docker image build and Windows PowerShell scripts"
+  ],
+  "paid_resources_used": false,
+  "weights_downloaded": false,
+  "bird_data_downloaded": false,
+  "note": "The execution tool caps long invocations; complete test groups were run separately and JUnit cases aggregated. No partial invocation counted. Direct dependency pins are not a GPU-validated lockfile."
+}

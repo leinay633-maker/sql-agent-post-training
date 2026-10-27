@@ -1,0 +1,64 @@
+{
+  "protocol": "efa-v4-rloo-two-turn-v1",
+  "base_commit": "5ea1515fb48717e99d613c9a6bd51755f6e4d8da",
+  "branch": "pro/v04-rl",
+  "evidence_type": "Executed new Linux CPU engineering tests; not Qwen4B/BIRD/H20 results",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux",
+    "torch": "2.10.0+cpu",
+    "cuda_available": false,
+    "transformers": "not installed",
+    "peft": "not installed"
+  },
+  "command": "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONPATH=. python -m pytest tests/test_rl_v04.py tests/test_rl_v04_training.py tests/test_rl_v04_gates.py -q",
+  "new_tests": {
+    "tests": 78,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 76
+  },
+  "xml": "reports/v0.4-cpu-tests.xml",
+  "xml_sha256": "b29ded09d547257f2497f3496c42a38c1298c1885245cbbc87d6958ba0da0467",
+  "known_skips": [
+    "test_real_hf_peft_cpu_gradient_and_saved_adapter: transformers/peft unavailable",
+    "test_h20_completed_pilot_evidence: EFA_V04_PILOT_RUN unset; no GPU/BIRD pilot exists here"
+  ],
+  "baseline_full_suite": "not executed here; local checkout reconstruction contains only the unchanged baseline modules required by new CPU tests. Claude Code must run full pytest in the actual repository.",
+  "user_windows_baseline": {
+    "passed": 124,
+    "known_failures": 1,
+    "skipped": 1,
+    "known_failure": "test_unsafe_archives_rejected[a\\\\b]"
+  },
+  "static_checks": [
+    "compileall for new code/tests",
+    "formal/pilot CLI plan with no model loading",
+    "original agent/pipeline/core/storage blobs unchanged locally",
+    "no dependency or v0.3 configuration changes"
+  ],
+  "not_executed": [
+    "Windows full pytest",
+    "optional real HF/PEFT tiny CPU test",
+    "BIRD data preparation and warm-start artifact integration",
+    "H20 BF16 Qwen3-4B sampling/training/reload",
+    "H20 throughput/memory/convergence",
+    "validation or held-out evaluation"
+  ],
+  "gpu_results": null,
+  "model_quality_claimed": false,
+  "source_sha256": {
+    "exec_feedback/rl/__init__.py": "cfc460f11d06923c84fb6eb58845ac5ca26bfa58a50eac3a13f19533757c928c",
+    "exec_feedback/rl/__main__.py": "fd24fd914fae53eeec574f86e2b9911f4ff0752e038a288b009b16ee53d78940",
+    "exec_feedback/rl/backend.py": "16fb86e5a8522db277183126d68da8223d0448b67166219a4e6f5a123ee0518a",
+    "exec_feedback/rl/checkpoint.py": "1ac040284c8fab296b433511946d3b7f475812983316b28cdbfb7c4d3ec0621c",
+    "exec_feedback/rl/config.py": "8a3806c91a33feda255bf460d866102ae2be576422179b39909c4ff1e989c864",
+    "exec_feedback/rl/evaluation.py": "2bf439abef0611756f1c46bc155d856d08ec14b8ee2b8e1bc3bdf772770ff924",
+    "exec_feedback/rl/objective.py": "7180f048e67d111e9bc5a8603eabe7d11ba3c1a7a20186fe8dc8d4a52ff76107",
+    "exec_feedback/rl/reporting.py": "6c0929cf285beb39c8911d9ede0e59c8892e666ef02cf6caaac91aff43ab7a80",
+    "exec_feedback/rl/rollout.py": "3f230de9883c3b60c5d820d9fec9a09efba96138e9ab0aabbe0ca3200e3422a4",
+    "exec_feedback/rl/study.py": "42fe1368944f13314c7cbb5a93abbf960f2d59c18453494625888b287f893212",
+    "exec_feedback/rl/training.py": "1613f0d55961f84e4929efccd4ab78bbb9adf478b72e8d01199bb98d1b9b1da0"
+  }
+}

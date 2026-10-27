@@ -1,0 +1,59 @@
+{
+  "protocol": "efa-v8-gated-teacher-v1",
+  "phase": "study",
+  "salt": "20261013",
+  "samples_teacher": 4,
+  "samples_hint": 2,
+  "temperature": 0.7,
+  "top_p": 0.8,
+  "top_k": 20,
+  "sample_shards": 64,
+  "teacher_minutes": 75,
+  "hint_minutes": 40,
+  "gate_delta": 0.05,
+  "max_steps": 4,
+  "max_tokens": 512,
+  "max_context": 8192,
+  "sql_workers": 16,
+  "slots": {
+    "student": 256,
+    "teacher": 256
+  },
+  "max_num_seqs": {
+    "student": 256,
+    "teacher": 256
+  },
+  "gpu_memory": {
+    "student": 0.4,
+    "teacher": 0.85
+  },
+  "sample_gpu_memory": 0.85,
+  "teacher_gpus": 4,
+  "train_examples": 3435,
+  "gap_max_examples": 4096,
+  "pairs_limit": 0,
+  "learning_rate": 0.0002,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "warmup_ratio": 0.03,
+  "max_length": 8192,
+  "save_steps": 32,
+  "micro_batch": 4,
+  "accumulation": 4,
+  "train_seconds": 9000,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "pair_batch": 16,
+  "pair_learning_rate": 2e-05,
+  "pair_beta": 0.1,
+  "pair_sft_weight": 1.0,
+  "limits": {
+    "seconds": 30.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  }
+}

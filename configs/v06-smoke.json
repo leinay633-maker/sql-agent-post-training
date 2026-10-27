@@ -1,0 +1,45 @@
+{
+  "protocol": "efa-v6-iterative-rft-v1",
+  "salt": "20261012",
+  "samples_round1": 4,
+  "samples_round2": 4,
+  "temperature": 1.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "round2_policy_seed": 42,
+  "sample_shards": 2,
+  "sample_slots": 256,
+  "sample_minutes": 5,
+  "max_steps": 4,
+  "max_tokens": 768,
+  "max_context": 16384,
+  "note_budget": 10000,
+  "sql_workers": 16,
+  "eval_slots": 256,
+  "vote_n": 4,
+  "vote_temperature": 0.8,
+  "vote_top_p": 0.95,
+  "vote_shards": 2,
+  "train_examples": 32,
+  "learning_rate": 0.0002,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "micro_batch": 4,
+  "accumulation": 4,
+  "warmup_ratio": 0.03,
+  "max_length": 12288,
+  "save_steps": 4,
+  "train_seconds": 600,
+  "seeds": [
+    42
+  ],
+  "clean_seeds": [
+    42
+  ],
+  "limits": {
+    "seconds": 30.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  }
+}
