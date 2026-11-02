@@ -181,6 +181,21 @@ def test_condition_names():
             parse(bad)
 
 
+def test_a_fixed_kv_cache_reaches_vllm_and_is_off_by_default(monkeypatch):
+    from exec_feedback.v8 import engine
+
+    seen = []
+    monkeypatch.setitem(sys.modules, "vllm", SimpleNamespace(LLM=lambda **kw: seen.append(kw) or "llm"))
+    monkeypatch.setattr("exec_feedback.models.load_tokenizer", lambda spec: "tokenizer")
+    spec, settings = {"local_path": "/models/student"}, {"max_context": 8192, "lora_r": 16, "teacher_gpus": 4}
+    engine.make_engine(spec, settings, "student", mem=0.4, seed=1, lora=True, max_num_seqs=256)
+    engine.make_engine(spec, settings, "student", mem=0.4, seed=1, lora=False, max_num_seqs=256,
+                       kv_cache_bytes=28 << 30)
+    assert "kv_cache_memory_bytes" not in seen[0] and seen[0]["enable_lora"] is True
+    assert seen[1]["kv_cache_memory_bytes"] == 28 << 30 and seen[1]["gpu_memory_utilization"] == 0.4
+    assert "enable_lora" not in seen[1]
+
+
 # ------------------------------------------------------------------------------------------------ end to end (CPU)
 class TemplateTokenizer:
     """ChatML rendered with jinja2 (as transformers does); ids are shifted code points, <|im_end|> = 2."""

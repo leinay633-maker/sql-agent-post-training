@@ -376,8 +376,11 @@ def test_existing_v03_dialogue_and_grader_bytes_unchanged():
     # and the unchanged v0.3/v0.5 suites; previous blobs: agent 74d7e5d6..., pipeline ed6aad02....
     # v0.9 passes an optional per-turn token trace from the response into the step record (only when a generator
     # returns one; no earlier generator does); previous agent blob a7874ac2....
-    expected = {"agent.py": "e9d70ad1b896c051685f42bd72c8d953570250ea",
-                "pipeline.py": "438a395b7ba703788399a8fba8de003e8bd7bf53"}
+    # The deployment study lets `dialogue` take each call's own usage from a policy with `complete()` (HTTPPolicy now
+    # has one, adding a lock and `extra_body`); the request body and the step records are as before, pinned by
+    # tests/test_deploy.py and tests/test_service.py; previous blobs: agent e9d70ad1..., pipeline 438a395b....
+    expected = {"agent.py": "2494e28f7f67ca4140d7bd6af65a81baf9dc8571",
+                "pipeline.py": "6caefe0f874540af7bb4fdba1fbfcb416b313344"}
     for name, sha in expected.items():
         data = (root / name).read_bytes()
         actual = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()

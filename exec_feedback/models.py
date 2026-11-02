@@ -206,6 +206,15 @@ class BudgetedPolicy:
     def __call__(self, messages: list[dict[str, str]]) -> str:
         self.budget.reserve()
         return self.inner(messages)
+    @property
+    def complete(self) -> Any:
+        """The inner policy's per-call usage path, behind the same budget; absent when the inner policy has none."""
+        if not hasattr(self.inner, "complete"):
+            raise AttributeError("complete")
+        def call(messages: list[dict[str, str]]) -> tuple[str, dict[str, int]]:
+            self.budget.reserve()
+            return self.inner.complete(messages)
+        return call
     def generate_batch(self, messages: list[list[dict[str, str]]]) -> list[Any]:
         if not hasattr(self.inner, "generate_batch"):
             raise ValueError("This provider does not support batched inference")
@@ -221,7 +230,8 @@ def create_policy(spec: dict[str, Any], adapter: Path | None = None, budget: Cal
         if adapter:
             raise ValueError("HTTP backend cannot automatically load local adapters; use transformers for the complete study")
         policy = HTTPPolicy(spec["endpoint"], spec["id"], allow_remote=spec.get("allow_remote", False),
-                            max_tokens=spec["max_tokens"])
+                            max_tokens=spec["max_tokens"], timeout=spec.get("timeout", 60),
+                            extra_body=spec.get("extra_body"))
         policy.metadata["identity"] = model_identity(spec)
         policy.temperature, policy.seed = spec["temperature"], spec.get("seed", 42)
         policy.metadata["temperature"] = policy.temperature

@@ -110,17 +110,25 @@ def dialogue_stream(database: Path, question: str, evidence: str, *, max_steps: 
 
 def dialogue(database: Path, question: str, evidence: str, policy: Any, *,
              max_steps: int = 4, feedback: bool = True, limits: Limits = Limits(),
-             review_success: bool = False) -> dict[str, Any]:
+             review_success: bool = False, fenced_json: bool = False) -> dict[str, Any]:
     engine = dialogue_stream(database, question, evidence, max_steps=max_steps,
-                             feedback=feedback, limits=limits, review_success=review_success)
+                             feedback=feedback, limits=limits, review_success=review_success, fenced_json=fenced_json)
+    # a provider that reports each call's own usage (HTTPPolicy.complete) stays right when other dialogues share it;
+    # the metadata difference below would count their calls too
+    complete = getattr(policy, "complete", None)
     try:
         messages = next(engine)
         while True:
             before = copy.deepcopy(policy.metadata.get("usage", {}))
             try:
-                raw = policy(messages)
-                after = policy.metadata.get("usage", {})
-                received = {"text": raw, "usage": {k: v - before.get(k, 0) for k, v in after.items() if type(v) is int}}
+                if complete is not None:
+                    raw, usage = complete(messages)
+                    received = {"text": raw, "usage": usage}
+                else:
+                    raw = policy(messages)
+                    after = policy.metadata.get("usage", {})
+                    received = {"text": raw,
+                                "usage": {k: v - before.get(k, 0) for k, v in after.items() if type(v) is int}}
             except BudgetExceeded:
                 raise
             except Exception as exc:

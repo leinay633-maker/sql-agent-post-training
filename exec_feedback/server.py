@@ -19,6 +19,16 @@ from .models import create_policy
 from .storage import atomic_json, fingerprint, read_json, CallBudget, BudgetExceeded
 
 
+class _Recorded:
+    """One request's view of a shared policy with per-call usage: the calls of this request, in order."""
+    def __init__(self, policy: Any, calls: list[dict[str, int]]) -> None:
+        self.policy, self.calls, self.metadata = policy, calls, policy.metadata
+    def complete(self, messages: list[dict[str, str]]) -> tuple[str, dict[str, int]]:
+        text, usage = self.policy.complete(messages)
+        self.calls.append(usage)
+        return text, usage
+
+
 def create_app(config: dict[str, Any], *, policy: Any = None) -> Any:
     try:
         from fastapi import FastAPI, HTTPException, Request
@@ -27,6 +37,16 @@ def create_app(config: dict[str, Any], *, policy: Any = None) -> Any:
     except ImportError as exc:
         raise RuntimeError("Install the server extra: python -m pip install -e '.[server]'") from exc
     settings = config["service"]
+    # Requests running at once; more than one only in front of an HTTP model server (the in-process model is not
+    # thread-safe). The two protocol switches default to the v0.2 service behaviour.
+    concurrent = settings.get("max_concurrent", 1)
+    if type(concurrent) is not int or not 1 <= concurrent <= 256:
+        raise ValueError("service.max_concurrent must be 1..256")
+    if concurrent > 1 and config["model"]["backend"] != "http":
+        raise ValueError("Concurrent analyses need the HTTP model backend")
+    review_success, fenced_json = settings.get("review_success", False), settings.get("fenced_json", False)
+    if type(review_success) is not bool or type(fenced_json) is not bool:
+        raise ValueError("service.review_success and service.fenced_json are true or false")
     key = os.environ.get("EFA_SERVER_KEY", "")
     try:
         local = ipaddress.ip_address(settings["host"]).is_loopback
@@ -38,10 +58,13 @@ def create_app(config: dict[str, Any], *, policy: Any = None) -> Any:
     catalog = _database_index(database_root)
     snapshots = {name: digest(path) for name,path in catalog.items()}
     output = Path(settings["results_root"])
-    gate = threading.BoundedSemaphore(1)
+    gate = threading.BoundedSemaphore(concurrent)
     holder = {"policy": policy}
     @contextlib.asynccontextmanager
     async def lifespan(app: Any):
+        if concurrent > 40:  # each analysis runs in anyio's worker threads, 40 by default
+            import anyio.to_thread
+            anyio.to_thread.current_default_thread_limiter().total_tokens = concurrent
         if holder["policy"] is None:
             budget = CallBudget(output / "service-budget.json", config["resources"]["max_model_calls"], config["resources"]["max_active_seconds"])
             holder["policy"] = create_policy(config["model"], Path(settings["adapter"]) if settings["adapter"] else None, budget)
@@ -116,7 +139,9 @@ def create_app(config: dict[str, Any], *, policy: Any = None) -> Any:
         if holder["policy"] is None:
             raise HTTPException(503, "model not ready")
         if not gate.acquire(blocking=False):
-            raise HTTPException(429, "One request is already running; this server intentionally has no unbounded queue")
+            raise HTTPException(429, ("One request is already running" if concurrent == 1 else
+                                      f"All {concurrent} request slots are busy")
+                                + "; this server intentionally has no unbounded queue")
         try:
             return await run_in_threadpool(function, *args)
         finally:
@@ -136,11 +161,16 @@ def create_app(config: dict[str, Any], *, policy: Any = None) -> Any:
                 raise HTTPException(409, "Database changed since server startup")
             model = holder["policy"]
             if hasattr(model, "set_task"): model.set_task(fingerprint(body))
-            result = dialogue(path, question, evidence, model, max_steps=settings["max_steps"], limits=Limits(**config["limits"]))
+            calls: list[dict[str, int]] = []
+            result = dialogue(path, question, evidence, _Recorded(model, calls) if hasattr(model, "complete") else model,
+                              max_steps=settings["max_steps"], limits=Limits(**config["limits"]),
+                              review_success=review_success, fenced_json=fenced_json)
             if digest(path) != snapshots[name]:
                 raise HTTPException(409, "Database changed during analysis")
             if "result" in result:
                 result["result"] = preview(result["result"], max_rows=100)
+            if calls:
+                result["calls"] = calls  # this request's own usage per model call
             result.pop("correct", None)  # Live requests have no reference answer.
             result.update(run_id=uuid.uuid4().hex, database=name, question=question, model=model.metadata["model"],
                           correctness="not_scored_no_reference", created_unix=time.time())

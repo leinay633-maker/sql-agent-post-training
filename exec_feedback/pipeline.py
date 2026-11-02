@@ -10,6 +10,7 @@ import os
 import platform
 import re
 import subprocess
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -50,10 +51,12 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 class HTTPPolicy:
-    """Explicit OpenAI-compatible endpoint; loopback only unless opted in."""
+    """Explicit OpenAI-compatible endpoint; loopback only unless opted in. `extra_body` adds fields the server reads
+    beyond the OpenAI ones (vLLM: stop_token_ids); it cannot replace the fixed request fields."""
     kind = "model"
+    FIXED = {"model", "messages", "temperature", "seed", "max_tokens", "stream"}
     def __init__(self, endpoint: str, model: str, *, allow_remote: bool = False,
-                 max_tokens: int = 512, timeout: float = 60) -> None:
+                 max_tokens: int = 512, timeout: float = 60, extra_body: dict[str, Any] | None = None) -> None:
         url = urllib.parse.urlsplit(endpoint)
         try:
             local = ipaddress.ip_address(url.hostname or "").is_loopback
@@ -65,21 +68,28 @@ class HTTPPolicy:
             raise ValueError("Remote API requires --allow-remote and HTTPS; default spending authorization is zero")
         if not model or not 1 <= max_tokens <= 8192 or not 0 < timeout <= 300:
             raise ValueError("Invalid model/output/timeout settings")
+        if not isinstance(extra_body or {}, dict) or set(extra_body or {}) & self.FIXED:
+            raise ValueError("extra_body may not replace the fixed request fields")
         self.endpoint = endpoint.rstrip("/") + "/chat/completions"
         self.model, self.max_tokens, self.timeout = model, max_tokens, timeout
-        self.temperature, self.seed = 0.0, 42
+        self.temperature, self.seed, self.extra_body = 0.0, 42, dict(extra_body or {})
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        self.lock = threading.Lock()
         self.metadata = {"provider": "openai-compatible", "endpoint": endpoint, "model": model,
                          "temperature": 0, "max_tokens": max_tokens,
                          "weights_verified": False, "calls": 0, "usage": {}}
-    def __call__(self, messages: list[dict[str, str]]) -> str:
-        body = json.dumps({"model": self.model, "messages": messages, "temperature": self.temperature, "seed": self.seed,
-                           "max_tokens": self.max_tokens, "stream": False}).encode()
+        if self.extra_body:
+            self.metadata["extra_body"] = self.extra_body
+    def complete(self, messages: list[dict[str, str]]) -> tuple[str, dict[str, int]]:
+        """One request: the text and this request's own usage; safe to call from several threads at once."""
+        body = json.dumps({**self.extra_body, "model": self.model, "messages": messages, "temperature": self.temperature,
+                           "seed": self.seed, "max_tokens": self.max_tokens, "stream": False}).encode()
         headers = {"Content-Type": "application/json"}
         key = os.environ.get("EFA_API_KEY")
         if key:
             headers["Authorization"] = "Bearer " + key
-        self.metadata["calls"] += 1
+        with self.lock:
+            self.metadata["calls"] += 1
         req = urllib.request.Request(self.endpoint, data=body, headers=headers)
         with self.opener.open(req, timeout=self.timeout) as response:
             raw = response.read(2_000_001)
@@ -88,14 +98,16 @@ class HTTPPolicy:
         payload = json.loads(raw)
         if payload.get("model") != self.model:
             raise ValueError("Returned model id does not match requested model; no silent fallback")
-        for key, value in (payload.get("usage") or {}).items():
-            if type(value) is int:
-                usage = self.metadata["usage"]
-                usage[key] = usage.get(key, 0) + value
+        usage = {k: v for k, v in (payload.get("usage") or {}).items() if type(v) is int}
+        with self.lock:
+            for k, v in usage.items():
+                self.metadata["usage"][k] = self.metadata["usage"].get(k, 0) + v
         text = payload["choices"][0]["message"]["content"]
         if not isinstance(text, str):
             raise ValueError("Expected assistant text content")
-        return text
+        return text, usage
+    def __call__(self, messages: list[dict[str, str]]) -> str:
+        return self.complete(messages)[0]
 
 
 def messages_for(task: Task, schema: dict[str, Any], max_steps: int, feedback: bool, *, review_success: bool = False,

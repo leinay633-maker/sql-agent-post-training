@@ -1,0 +1,37 @@
+{
+  "protocol": "efa-deploy-v1",
+  "phase": "smoke",
+  "salt": "20261029",
+  "max_steps": 4,
+  "max_tokens": 512,
+  "max_context": 8192,
+  "sql_workers": 16,
+  "limits": {
+    "seconds": 30.0,
+    "max_rows": 10000,
+    "max_bytes": 8388608,
+    "vm_steps": 1000000000
+  },
+  "roles": [
+    "test",
+    "validation"
+  ],
+  "eval_slots": 16,
+  "eval_max_num_seqs": 256,
+  "eval_gpu_memory": 0.85,
+  "lora_r": 16,
+  "bench_tasks": 8,
+  "concurrency": [
+    1,
+    4
+  ],
+  "warmup_tasks": 2,
+  "serve_gpu_memory": 0.85,
+  "serve_max_num_seqs": 256,
+  "serve_batched_tokens": 16384,
+  "request_timeout": 300,
+  "vllm_port": 8000,
+  "service_port": 8090,
+  "bootstrap_draws": 2000,
+  "bootstrap_seed": 20261012
+}

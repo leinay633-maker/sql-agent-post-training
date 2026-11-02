@@ -9,13 +9,19 @@ from ..v7.engine import generator, stop_ids  # noqa: F401  (re-exported for v0.8
 
 
 def make_engine(spec: dict[str, Any], settings: dict[str, Any], kind: str, *, mem: float, seed: int, lora: bool,
-                max_num_seqs: int) -> tuple[Any, Any]:
+                max_num_seqs: int, kv_cache_bytes: int | None = None, quantization: str | None = None) -> tuple[Any, Any]:
     from vllm import LLM
     from ..models import load_tokenizer
 
     kw = dict(model=spec["local_path"], tokenizer=spec["local_path"], dtype="bfloat16",
               max_model_len=settings["max_context"], gpu_memory_utilization=mem, enable_prefix_caching=True,
               seed=seed, generation_config="vllm", max_num_seqs=max_num_seqs, trust_remote_code=False)
+    if kv_cache_bytes is not None:
+        # A fixed KV cache skips vLLM 0.11.2's start-up profiling, whose assertion fails when another engine on the
+        # same GPU exits during those seconds (v0.11/v0.12 dev evaluations); `mem` still bounds the start-up check.
+        kw["kv_cache_memory_bytes"] = kv_cache_bytes
+    if quantization is not None:  # "fp8": vLLM quantizes the bf16 checkpoint as it loads it (the deployment study)
+        kw["quantization"] = quantization
     if kind == "teacher":
         visible = [g for g in os.environ.get("CUDA_VISIBLE_DEVICES", "").split(",") if g.strip()]
         if len(visible) != settings["teacher_gpus"]:
